@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>InternetSpeed</title>
+  <meta name="description" content="버튼 한 번으로 핑, 업로드, 다운로드 속도를 측정하는 인터넷 속도 측정기" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main class="app">
+    <header class="top">
+      <div class="brand">
+        <span class="logo" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="22" height="22"><path d="M12 3a9 9 0 0 0-9 9h2a7 7 0 0 1 14 0h2a9 9 0 0 0-9-9Zm0 4a5 5 0 0 0-5 5h2a3 3 0 0 1 6 0h2a5 5 0 0 0-5-5Zm0 4a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3Z" fill="currentColor"/></svg>
+        </span>
+        <span class="brand-name">InternetSpeed</span>
+      </div>
+      <div class="server" id="server">서버: 대기 중</div>
+    </header>
+
+    <section class="steps" aria-label="측정 단계">
+      <div class="step" data-step="ping"><span class="dot"></span>핑</div>
+      <div class="line"></div>
+      <div class="step" data-step="upload"><span class="dot"></span>업로드</div>
+      <div class="line"></div>
+      <div class="step" data-step="download"><span class="dot"></span>다운로드</div>
+    </section>
+
+    <section class="gauge-card" data-phase="idle" id="gaugeCard">
+      <svg class="gauge" viewBox="0 0 300 264" aria-hidden="true">
+        <defs>
+          <linearGradient id="gradUpload" x1="0" y1="1" x2="1" y2="0">
+            <stop offset="0%" stop-color="#c084fc" />
+            <stop offset="100%" stop-color="#7c3aed" />
+          </linearGradient>
+          <linearGradient id="gradDownload" x1="0" y1="1" x2="1" y2="0">
+            <stop offset="0%" stop-color="#22d3ee" />
+            <stop offset="100%" stop-color="#3b82f6" />
+          </linearGradient>
+          <linearGradient id="gradPing" x1="0" y1="1" x2="1" y2="0">
+            <stop offset="0%" stop-color="#fbbf24" />
+            <stop offset="100%" stop-color="#f59e0b" />
+          </linearGradient>
+          <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur stdDeviation="4" result="b" />
+            <feMerge><feMergeNode in="b" /><feMergeNode in="SourceGraphic" /></feMerge>
+          </filter>
+        </defs>
+        <path id="arcTrack" class="arc-track" />
+        <path id="arcValue" class="arc-value" filter="url(#glow)" />
+        <g id="ticks"></g>
+        <g id="needle" class="needle">
+          <polygon points="150,145 255,150 150,155" />
+          <circle cx="150" cy="150" r="10" />
+          <circle cx="150" cy="150" r="4" class="needle-hub" />
+        </g>
+        <text x="150" y="196" class="phase-label" id="phaseLabel">준비 완료</text>
+        <text x="150" y="232" class="speed" id="speedValue">0.00</text>
+        <text x="150" y="254" class="unit">Mbps</text>
+      </svg>
+
+      <div class="progress"><div class="progress-bar" id="progressBar"></div></div>
+    </section>
+
+    <button class="start" id="startBtn" type="button">
+      <span class="start-text">측정 시작</span>
+    </button>
+
+    <section class="results">
+      <article class="result" data-kind="ping">
+        <div class="r-label">핑</div>
+        <div class="r-value"><span id="pingValue">–</span><small>ms</small></div>
+      </article>
+      <article class="result" data-kind="jitter">
+        <div class="r-label">지터</div>
+        <div class="r-value"><span id="jitterValue">–</span><small>ms</small></div>
+      </article>
+      <article class="result" data-kind="upload">
+        <div class="r-label"><i class="arrow up"></i>업로드</div>
+        <div class="r-value"><span id="uploadValue">–</span><small>Mbps</small></div>
+      </article>
+      <article class="result" data-kind="download">
+        <div class="r-label"><i class="arrow down"></i>다운로드</div>
+        <div class="r-value"><span id="downloadValue">–</span><small>Mbps</small></div>
+      </article>
+    </section>
+
+    <p class="status" id="status" role="status">시작 버튼을 누르면 핑 → 업로드 → 다운로드 순서로 측정합니다.</p>
+
+    <footer class="foot">
+      측정 서버: Cloudflare 엣지 네트워크 · 결과는 브라우저·네트워크 상태에 따라 달라질 수 있습니다.
+    </footer>
+  </main>
+
+  <script src="speedtest.js"></script>
+</body>
+</html>

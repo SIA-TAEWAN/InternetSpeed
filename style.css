@@ -1,0 +1,210 @@
+:root {
+  --bg: #0b0f1a;
+  --bg-glow-1: rgba(124, 58, 237, 0.18);
+  --bg-glow-2: rgba(34, 211, 238, 0.14);
+  --card: rgba(255, 255, 255, 0.04);
+  --card-border: rgba(255, 255, 255, 0.08);
+  --text: #e8ecf5;
+  --muted: #8b93a7;
+  --track: rgba(255, 255, 255, 0.07);
+  --tick: rgba(255, 255, 255, 0.35);
+  --ping: #f59e0b;
+  --upload: #a855f7;
+  --download: #22d3ee;
+  --accent: var(--download);
+  --radius: 20px;
+}
+
+* { box-sizing: border-box; }
+
+html, body { margin: 0; }
+
+body {
+  min-height: 100vh;
+  background:
+    radial-gradient(600px 400px at 15% 10%, var(--bg-glow-1), transparent 70%),
+    radial-gradient(600px 400px at 85% 90%, var(--bg-glow-2), transparent 70%),
+    var(--bg);
+  color: var(--text);
+  font-family: "Noto Sans KR", system-ui, -apple-system, "Segoe UI", sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+.app {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 24px 16px 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 22px;
+}
+
+/* ---------- Header ---------- */
+.top {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.brand { display: flex; align-items: center; gap: 10px; }
+.logo {
+  display: grid; place-items: center;
+  width: 36px; height: 36px; border-radius: 10px;
+  background: linear-gradient(135deg, #7c3aed, #22d3ee);
+  color: #fff;
+}
+.brand-name { font-weight: 700; font-size: 1.15rem; letter-spacing: -0.01em; }
+.server {
+  font-size: 0.82rem; color: var(--muted);
+  padding: 6px 12px; border-radius: 999px;
+  background: var(--card); border: 1px solid var(--card-border);
+}
+
+/* ---------- Steps ---------- */
+.steps {
+  display: flex; align-items: center; gap: 10px;
+  font-size: 0.85rem; color: var(--muted);
+}
+.step { display: flex; align-items: center; gap: 6px; transition: color .3s; }
+.step .dot {
+  width: 9px; height: 9px; border-radius: 50%;
+  background: var(--track); border: 1px solid var(--card-border);
+  transition: background .3s, box-shadow .3s;
+}
+.steps .line { width: 34px; height: 1px; background: var(--card-border); }
+.step.active { color: var(--text); }
+.step.active .dot { background: var(--accent); box-shadow: 0 0 10px var(--accent); animation: pulse 1s infinite alternate; }
+.step.done { color: var(--text); }
+.step.done .dot { background: #34d399; }
+@keyframes pulse { to { transform: scale(1.35); } }
+
+/* ---------- Gauge ---------- */
+.gauge-card {
+  position: relative;
+  width: 100%;
+  max-width: 420px;
+  padding: 18px 18px 22px;
+  border-radius: 28px;
+  background: var(--card);
+  border: 1px solid var(--card-border);
+  backdrop-filter: blur(10px);
+}
+.gauge-card[data-phase="ping"]     { --accent: var(--ping); }
+.gauge-card[data-phase="upload"]   { --accent: var(--upload); }
+.gauge-card[data-phase="download"] { --accent: var(--download); }
+
+.gauge { display: block; width: 100%; height: auto; }
+
+.arc-track {
+  fill: none; stroke: var(--track); stroke-width: 18; stroke-linecap: round;
+}
+.arc-value {
+  fill: none; stroke: url(#gradDownload); stroke-width: 18; stroke-linecap: round;
+}
+.gauge-card[data-phase="upload"] .arc-value { stroke: url(#gradUpload); }
+.gauge-card[data-phase="ping"]   .arc-value { stroke: url(#gradPing); }
+
+.tick-label {
+  fill: var(--muted); font-size: 11px;
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  text-anchor: middle; dominant-baseline: middle;
+}
+.tick-mark { stroke: var(--tick); stroke-width: 2; stroke-linecap: round; }
+
+.needle polygon { fill: var(--text); opacity: 0.9; }
+.needle circle { fill: var(--text); }
+.needle .needle-hub { fill: var(--bg); }
+
+.phase-label, .speed, .unit { text-anchor: middle; }
+.phase-label {
+  fill: var(--accent); font-size: 12px; font-weight: 600; letter-spacing: 0.06em;
+  transition: fill .3s;
+}
+.speed {
+  fill: var(--text);
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-weight: 700; font-size: 38px;
+  font-variant-numeric: tabular-nums;
+}
+.unit { fill: var(--muted); font-size: 12px; }
+
+.progress {
+  margin-top: 14px;
+  height: 4px; border-radius: 4px;
+  background: var(--track); overflow: hidden;
+}
+.progress-bar {
+  height: 100%; width: 0%;
+  background: var(--accent);
+  border-radius: 4px;
+  transition: width .2s linear, background .3s;
+}
+
+/* ---------- Button ---------- */
+.start {
+  appearance: none; border: 0; cursor: pointer;
+  padding: 16px 44px; border-radius: 999px;
+  font: inherit; font-weight: 700; font-size: 1.05rem; color: #fff;
+  background: linear-gradient(135deg, #7c3aed, #2563eb 60%, #06b6d4);
+  box-shadow: 0 10px 30px rgba(59, 130, 246, 0.35);
+  transition: transform .15s, box-shadow .2s, opacity .2s;
+}
+.start:hover { transform: translateY(-2px); box-shadow: 0 14px 34px rgba(59, 130, 246, 0.45); }
+.start:active { transform: translateY(0); }
+.start:focus-visible { outline: 3px solid rgba(34, 211, 238, 0.6); outline-offset: 3px; }
+.start:disabled { cursor: progress; opacity: 0.55; transform: none; box-shadow: none; }
+
+/* ---------- Results ---------- */
+.results {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+.result {
+  padding: 14px 14px 16px;
+  border-radius: var(--radius);
+  background: var(--card);
+  border: 1px solid var(--card-border);
+  transition: border-color .3s, transform .3s;
+}
+.result.live { border-color: var(--live); transform: translateY(-2px); }
+.result[data-kind="ping"], .result[data-kind="jitter"] { --live: var(--ping); }
+.result[data-kind="upload"]   { --live: var(--upload); }
+.result[data-kind="download"] { --live: var(--download); }
+
+.r-label {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 0.8rem; color: var(--muted);
+}
+.r-value {
+  margin-top: 6px;
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-weight: 700; font-size: 1.45rem;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.r-value small {
+  margin-left: 4px; font-size: 0.72rem; font-weight: 500; color: var(--muted);
+  font-family: "Noto Sans KR", sans-serif;
+}
+.arrow {
+  width: 0; height: 0;
+  border-left: 5px solid transparent; border-right: 5px solid transparent;
+}
+.arrow.up { border-bottom: 7px solid var(--upload); }
+.arrow.down { border-top: 7px solid var(--download); }
+
+.status { margin: 0; color: var(--muted); font-size: 0.88rem; text-align: center; min-height: 1.4em; }
+.status.error { color: #f87171; }
+
+.foot { margin-top: 8px; color: var(--muted); font-size: 0.75rem; text-align: center; opacity: 0.75; }
+
+@media (max-width: 560px) {
+  .results { grid-template-columns: repeat(2, 1fr); }
+  .start { width: 100%; }
+  .server { font-size: 0.75rem; }
+}
